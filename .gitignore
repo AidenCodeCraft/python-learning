@@ -9,7 +9,7 @@ dist/
 *.egg-info/
 .eggs/
 
-# ---- 虚拟环境 ----
+# ---- 虚拟环境（每台电脑各建一次，不进 Git） ----
 .venv/
 venv/
 env/
@@ -34,4 +34,8 @@ htmlcov/
 .idea/
 .DS_Store
 Thumbs.db
-# probe
+
+# ---- DSH 本地指令覆盖（机器专属，故意不同步） ----
+AGENTS.local.md
+CLAUDE.local.md
+.dsh/
