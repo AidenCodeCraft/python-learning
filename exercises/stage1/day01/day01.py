@@ -81,8 +81,9 @@ def ex07_swap() -> None:
     b: int = 2
     # 写法 1（你 C/Java 的直觉）：不会
     # TODO
-    a = b - 1
-    b = a + 1
+    a = a + b
+    b = a - b
+    a = a - b
 
     # 写法 2（Python 风格）：
     # TODO

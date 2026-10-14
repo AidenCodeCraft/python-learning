@@ -21,8 +21,8 @@ def q1_deepcopy_version() -> None:
     s["tags"].append("y")
     s["id"] = 99
 
-    # 预测：t = ?
-    # 预测：s = ?
+    # 预测：t = {"tags": ["x"], "id": 1}
+    # 预测：s = {"tags": ["x", "y"], "id": 99}
     print("q1:", t, s)
 
 
@@ -34,8 +34,8 @@ def q2_alias_version() -> None:
     s["tags"].append("y")
     s["id"] = 99
 
-    # 预测：t = ?
-    # 预测：s = ?
+    # 预测：t = {"tags": ["x", "y"], "id": 99}
+    # 预测：s = {"tags": ["x", "y"], "id": 99}
     print("q2:", t, s)
 
 
@@ -46,13 +46,13 @@ def q3_rebind_inside_default() -> None:
         items = items + [x]
         return items
 
-    # 预测：第一次 print = ?
-    # 预测：第二次 print = ?
+    # 预测：第一次 print = q3:["a"]
+    # 预测：第二次 print = q3:["b"]
     print("q3:", f("a"))
     print("q3:", f("b"))
 
     # 追问：为什么这个版本**不会**像 add_task_bad 那样累积？（一句话）
-    # 答：
+    # 答：因为 + 会另起一个对象
 
 
 def q4_oral() -> None:
@@ -61,8 +61,8 @@ def q4_oral() -> None:
     ① `q = q + [4]` 和 `q.append(4)` 的区别是什么？
     ② 什么时候该用 `=`，什么时候该用 `.copy()`？
     """
-    # ①
-    # ②
+    # ①`q = q + [4]`是另起一个对象，而q.append(4)是在原有对象的最后加上4
+    # ② =想让多个变量指向相同对象；.copy()想让多个变量有自己的对象，但内层是共享
     print("q4: 见注释")
 
 
