@@ -76,7 +76,7 @@ print(id(x))    # 另一个地址 B —— 证明是"换指向"，不是"改内�
 
 | 不可变（immutable） | 可变（mutable） |
 |---|---|
-| `int` `float` `bool` `str` `None` `tuple` `frozenset` | `list` `dict` `set` `bytearray` |
+| `int` `float` `bool` `str` `None` `tuple` `frozenset` `complex` `bytes` `range` | `list` `dict` `set` `bytearray` |
 
 - **不可变**：对象一旦造出来，内容就改不了。你写的"修改"其实是**造了个新对象**。
   ```python
