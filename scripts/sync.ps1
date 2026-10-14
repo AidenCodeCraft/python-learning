@@ -40,9 +40,14 @@ function Write-Step([string]$Title) {
 }
 
 function Get-Upstream {
-    $up = git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>$null
-    if ($LASTEXITCODE -ne 0 -or -not $up) { return $null }
-    return $up.Trim()
+    # 用 git config 查上游，比 'git rev-parse @{u}' 干净：
+    # 上游不存在时不会往 stderr 吐东西（$ErrorActionPreference='Stop' 下会被当成终止错误）
+    $branch = (git rev-parse --abbrev-ref HEAD).Trim()
+    $remote = git config --get "branch.$branch.remote"
+    $merge  = git config --get "branch.$branch.merge"
+    if (-not $remote -or -not $merge) { return $null }
+    $short = $merge -replace '^refs/heads/', ''
+    return "$remote/$short"
 }
 
 function Assert-Clean([string]$Why) {
