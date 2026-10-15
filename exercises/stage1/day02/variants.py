@@ -45,10 +45,10 @@ def v2_split_and_merge() -> None:
     def merge_minutes(days: int, hours: int, minutes: int) -> int:
         """反向：把 (天, 时, 分) 合回总分钟数。merge(1, 1, 0) → 1500。"""
         # TODO
-        return days * 3600 + hours * 60 + minutes
+        return days * 1440 + hours * 60 + minutes
 
     # 预测：split_minutes(1500) = (0, 25, 0)   split_minutes(1440) = (0, 24, 0)   split_minutes(59) = (0, 0, 59)
-    # 预测：merge_minutes(1, 1, 0) = 3660
+    # 预测：merge_minutes(1, 1, 0) = 1500
     print("v2-split:", split_minutes(1500), split_minutes(1440), split_minutes(59))
     print("v2-merge:", merge_minutes(1, 1, 0))
 
