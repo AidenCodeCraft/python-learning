@@ -18,7 +18,7 @@ from __future__ import annotations
 
 def ex01_read_modify_range() -> None:
     """档① 第 1 题：把 demo 的 1-b（`range(2, 10, 3)`）改成 `range(2, 12, 3)`。"""
-    # 预测：list(range(2, 12, 3)) = ?
+    # 预测：list(range(2, 12, 3)) = 2,5,8,11
     print("ex01:", list(range(2, 12, 3)))
 
 
@@ -26,17 +26,17 @@ def ex02_read_modify_while() -> None:
     """档① 第 2 题：把 demo 的 3-a（`while i <= 5`）改成 `while i < 5`。"""
     total = 0
     i = 1
-    while i <= 5:  # TODO: 改成 while i < 5
+    while i < 5:  # TODO: 改成 while i < 5
         total += i
         i += 1
-    # 预测：total = ?   i = ?
+    # 预测：total = 10    i = 5
     print("ex02:", total, i)
 
 
 def ex03_read_modify_enumerate() -> None:
     """档① 第 3 题：把 demo 的 2-a 改成 `enumerate(tasks, 1)`（下标从 1 开始）。"""
     tasks = ["写代码", "自测", "提交"]
-    for i, t in enumerate(tasks):  # TODO: 加 start 参数
+    for i, t in enumerate(tasks, 1):  # TODO: 加 start 参数
         print("ex03:", i, t)
 
 
@@ -46,16 +46,16 @@ def ex03_read_modify_enumerate() -> None:
 
 def ex04_fill_range_even() -> None:
     """档② 第 4 题：用 **range 的步长**直接打出 2 4 6 8 10（不许用 if 判断偶数）。"""
-    for n in range(1, 11):  # TODO: 改 range 的参数，并删掉下面的 if
-        if n % 2 == 0:
-            print("ex04:", n)
+    for n in range(1, 11, 2):  # TODO: 改 range 的参数，并删掉下面的 if
+        # if n % 2 == 0:
+        print("ex04:", n)
 
 
 def ex05_fill_while_sum() -> None:
     """档② 第 5 题：用 while 求 1+2+...+100（期望 5050）。有 1 处要改。"""
     total = 0
     i = 1
-    while i < 100:  # TODO: 边界对不对？（现在的结果是多少？）
+    while i < 101:  # TODO: 边界对不对？（现在的结果是多少？）
         total += i
         i += 1
     print("ex05:", total)
@@ -67,6 +67,7 @@ def ex06_fill_break() -> None:
         if n % 7 == 0:
             print("ex06:", n)
             # TODO: 加一行，让循环停在这里
+            break
 
 
 # ============================================================
@@ -86,7 +87,15 @@ def ex07_fix_loop(n: int) -> int:
     要求：返回 1+2+...+n；n <= 0 时返回 0。
     """
     # TODO: 写正确版本
-    return 0
+    total = 0
+    i = 1
+    while i <= n:
+        if n > 0:
+            total += i
+            i += 1
+        else:
+            return 0
+    return total
 
 
 def ex08_sum_to(n: int) -> int:
@@ -94,6 +103,9 @@ def ex08_sum_to(n: int) -> int:
     和 ex07 是同一个问题 —— 体会两种循环的差别。
     """
     # TODO
+    for i in range(1, n):
+        if n <= 0:
+            return 0
     return 0
 
 
@@ -102,7 +114,11 @@ def ex09_count_vowels(s: str) -> int:
     例：count_vowels("Hello World") → 3
     """
     # TODO
-    return 0
+    count = 0
+    for i in s:
+        if s in ["a","e","i","o","u"]:
+            count = i
+    return count
 
 
 def ex10_find_first(items: list[int], target: int) -> int:
