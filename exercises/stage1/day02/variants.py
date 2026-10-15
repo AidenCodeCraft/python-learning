@@ -35,8 +35,8 @@ def v2_split_and_merge() -> None:
 
     def split_minutes(total_minutes: int) -> tuple[int, int, int]:
         """1500 → (1, 1, 0)；1440 → (1, 0, 0)；59 → (0, 0, 59)。"""
-        h = total_minutes // 3600
-        total_minutes %= 3600
+        h = total_minutes // 1440
+        total_minutes %= 1440
         m = total_minutes // 60 
         total_minutes %= 60
         s = total_minutes
@@ -70,7 +70,7 @@ def v3_classify() -> None:
         else:
             return "none"
 
-    # 预测：classify(45) = 15x  classify(25) = 5x  classify(9) = 3x  classify(7) = 7
+    # 预测：classify(45) = 15x  classify(25) = 5x  classify(9) = 3x  classify(7) = none
     print("v3:", classify(45), classify(25), classify(9), classify(7))
 
 

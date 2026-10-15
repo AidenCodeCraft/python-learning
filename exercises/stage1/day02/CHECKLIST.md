@@ -6,33 +6,33 @@
 
 ## 一、当天学习产出
 
-- [ ] 档① 3 题（`day02.py` ex01–ex03：改 demo + 写解释）
-- [ ] 档② 4 题（ex04–ex07）
-- [ ] 档③ 5 题（ex08–ex12，含 1 道改错题 + 1 道读代码说结果题）
-- [ ] 微课 3 题（[micro_exceptions.md](micro_exceptions.md)：`to_int` / 读代码说结果 / 改裸 `except`）
-- [ ] "四、自检清单"逐题对过，**对不上的题号记下来了**
+- [√] 档① 3 题（`day02.py` ex01–ex03：改 demo + 写解释）
+- [√] 档② 4 题（ex04–ex07）
+- [√] 档③ 5 题（ex08–ex12，含 1 道改错题 + 1 道读代码说结果题）
+- [√] 微课 3 题（[micro_exceptions.md](micro_exceptions.md)：`to_int` / 读代码说结果 / 改裸 `except`）
+- [√] "四、自检清单"逐题对过，**对不上的题号记下来了**
 
 ## 二、文件回填
 
-- [ ] `demo_reference.py` 的 `1-b`、`3-c`、`4-a/4-b/4-c` 改动完成并跑过
-- [ ] `day02.py` 每处 TODO 上方的"预测："都写了（**先预测再运行，不是运行后抄**）
-- [ ] 函数签名和类型注解没被删掉
+- [√] `demo_reference.py` 的 `1-b`、`3-c`、`4-a/4-b/4-c` 改动完成并跑过
+- [√] `day02.py` 每处 TODO 上方的"预测："都写了（**先预测再运行，不是运行后抄**）
+- [√] 函数签名和类型注解没被删掉
 
 ## 三、复盘
 
-- [ ] `mistakes/2026-10-15.md` 已写（现象 / 概念层错因 / 正确写法 / 变式）
-- [ ] 合上错题本，把末尾"自测 5 问"用嘴答一遍
-- [ ] README 末尾"今日验收标准"7 条逐条对过
+- [√] `mistakes/2026-10-15.md` 已写（现象 / 概念层错因 / 正确写法 / 变式）
+- [√] 合上错题本，把末尾"自测 5 问"用嘴答一遍
+- [√] README 末尾"今日验收标准"7 条逐条对过
 
 ## 四、环境与提交
 
-- [ ] `git add .` → `git commit -m "feat(stage1): day02 运算符与条件 12 题"` → `git push`
-- [ ] `git log --oneline` 能看到今天这一条
-- [ ] `git status` 干净（只剩 `.venv`、`__pycache__` 这类被忽略的）
+- [√] `git add .` → `git commit -m "feat(stage1): day02 运算符与条件 12 题"` → `git push`
+- [√] `git log --oneline` 能看到今天这一条
+- [√] `git status` 干净（只剩 `.venv`、`__pycache__` 这类被忽略的）
 
 ## 五、交给教练
 
-- [ ] 按 README 第六节的 9 行格式把提交发给我
+- [√] 按 README 第六节的 9 行格式把提交发给我
 
 ---
 
@@ -40,18 +40,18 @@
 
 > 首次提交结论：**不通过**。以下做完才算收口。
 
-- [ ] `ex10_split_seconds`：`total //= 3600` / `total //= 60` 拿的是"份数"不是"剩余"；
+- [√] `ex10_split_seconds`：`total //= 3600` / `total //= 60` 拿的是"份数"不是"剩余"；
       另把变量名 `tuple` 改掉（它遮蔽了内置 `tuple`），并返回**真正的元组**
-- [ ] `ex06`：`if s or "":` 判反了（实测输出"非空"）→ 换成"非"的写法
-- [ ] `ex08`：70 → `"C"`、60 → `"D"`（现在这两支都返回 `"B"`）
-- [ ] `ex09`：`n % 3` 缺 `== 0`，且两个条件要用 `and` 连接
-- [ ] `ex03-c` 注释：值不是 `True`，是 `boom`
-- [ ] `ex12` 预测 4 → `[]`；预测 5 → `-4 2 False`
-- [ ] `demo_reference.py` 5 处预测改成实测值：`2-a`→`True`、`2-c`→`True`、`3-b`→`"b"`、`4-c`→`boom`、`6-a`→`False False`
-- [ ] 微课 3 题（[micro_exceptions.md](micro_exceptions.md)）
-- [ ] 变式题 3 道（[variants.py](variants.py)，D2 版）
-- [ ] `mistakes/2026-10-15.md` 错题本
-- [ ] 以上全部提交并 push
+- [√] `ex06`：`if s or "":` 判反了（实测输出"非空"）→ 换成"非"的写法
+- [√] `ex08`：70 → `"C"`、60 → `"D"`（现在这两支都返回 `"B"`）
+- [√] `ex09`：`n % 3` 缺 `== 0`，且两个条件要用 `and` 连接
+- [√] `ex03-c` 注释：值不是 `True`，是 `boom`
+- [√] `ex12` 预测 4 → `[]`；预测 5 → `-4 2 False`
+- [√] `demo_reference.py` 5 处预测改成实测值：`2-a`→`True`、`2-c`→`True`、`3-b`→`"b"`、`4-c`→`boom`、`6-a`→`False False`
+- [√] 微课 3 题（[micro_exceptions.md](micro_exceptions.md)）
+- [√] 变式题 3 道（[variants.py](variants.py)，D2 版）
+- [√] `mistakes/2026-10-15.md` 错题本
+- [√] 以上全部提交并 push
 
 ---
 

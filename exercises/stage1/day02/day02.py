@@ -39,7 +39,7 @@ def ex03_read_modify_short_circuit() -> None:
     # 预测：下面三行分别输出什么？"boom() 被执行了"会在第几行打印？
     print("ex03-a:", False and boom())  # ex03-a:False
     print("ex03-b:", True or boom())    # ex03-b:True
-    print("ex03-c:", True and boom())   # ex03-c:True
+    print("ex03-c:", True and boom())   # ex03-c:boom
     # 预测：ex03-c:会打印"boom() 被执行了"
 
 
