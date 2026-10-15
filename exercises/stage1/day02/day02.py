@@ -18,15 +18,15 @@ from __future__ import annotations
 
 def ex01_read_modify_floor_div() -> None:
     """档① 第 1 题：把 demo 的 1-b 改成 `7 // -2`，预测并运行。"""
-    # 预测：7 // -2 = ?
-    # 预测：它和 -7 // 2 一样吗？为什么？（一句话）
+    # 预测：7 // -2 = -4
+    # 预测：它和 -7 // 2 一样吗？为什么？（一句话）：一样，都是有负数，向下取整都是-4
     print("ex01:", 7 // -2, -7 // 2)
 
 
 def ex02_read_modify_or_chain() -> None:
     """档① 第 2 题：把 demo 的 3-c 改成 `"最后" or "" or 0 or [] or None`。"""
-    # 预测：输出 = ?
-    # 预测：为什么 `or` 返回的不是 True？
+    # 预测：输出 = 最后
+    # 预测：为什么 `or` 返回的不是 True？or / and 返回处理结果操作数
     print("ex02:", "最后" or "" or 0 or [] or None)
 
 
@@ -37,9 +37,10 @@ def ex03_read_modify_short_circuit() -> None:
         return "boom"
 
     # 预测：下面三行分别输出什么？"boom() 被执行了"会在第几行打印？
-    print("ex03-a:", False and boom())
-    print("ex03-b:", True or boom())
-    print("ex03-c:", True and boom())
+    print("ex03-a:", False and boom())  # ex03-a:False
+    print("ex03-b:", True or boom())    # ex03-b:True
+    print("ex03-c:", True and boom())   # ex03-c:True
+    # 预测：ex03-c:会打印"boom() 被执行了"
 
 
 # ============================================================
@@ -48,18 +49,18 @@ def ex03_read_modify_short_circuit() -> None:
 
 def ex04_fill_operator_mod() -> None:
     """档② 第 4 题：期望输出 2。"""
-    print("ex04:", 17 / 5)  # TODO: 换一个运算符，让结果是 2
+    print("ex04:", 17 % 5)  # TODO: 换一个运算符，让结果是 2
 
 
 def ex05_fill_operator_pow() -> None:
     """档② 第 5 题：期望输出 1024。"""
-    print("ex05:", 2 * 10)  # TODO: 换一个运算符，让结果是 1024
+    print("ex05:", 2 ** 10)  # TODO: 换一个运算符，让结果是 1024
 
 
 def ex06_fill_blank_truthy() -> None:
     """档② 第 6 题：用"真假值"判断空串，不许用 `==`。"""
     s: str = ""
-    if s == "":  # TODO: 改成利用真值判断的写法
+    if not s:  # TODO: 改成利用真值判断的写法
         print("ex06: 空")
     else:
         print("ex06: 非空")
@@ -68,7 +69,7 @@ def ex06_fill_blank_truthy() -> None:
 def ex07_fill_blank_default() -> None:
     """档② 第 7 题：data 为空时给出默认值，期望 x 输出 "默认"。"""
     data: list[int] = []
-    x: object = data and "默认"  # TODO: 换一个逻辑运算符
+    x: object = data or "默认"  # TODO: 换一个逻辑运算符
     print("ex07:", x)
 
 
@@ -79,7 +80,16 @@ def ex07_fill_blank_default() -> None:
 def ex08_grade(score: int) -> str:
     """档③ 第 8 题：≥90 → "A"，≥80 → "B"，≥70 → "C"，≥60 → "D"，其余 → "F"。"""
     # TODO
-    return ""
+    if score >= 90:
+        return "A"
+    elif score < 90 and score >= 80:
+        return "B"
+    elif score < 80 and score >= 70:
+        return "C"
+    elif score < 70 and score >= 60:
+        return "D"
+    else:
+        return "F"
 
 
 def ex09_fizzbuzz(n: int) -> str:
@@ -88,7 +98,14 @@ def ex09_fizzbuzz(n: int) -> str:
     提示：先想清楚"哪个条件必须先判"。
     """
     # TODO
-    return ""
+    if (n % 3 == 0) and (n % 5 == 0):
+        return "FizzBuzz"
+    elif n % 3 == 0:
+        return "Fizz"
+    elif n % 5 == 0:
+        return "Buzz"
+    else:
+        return str(n)
 
 
 def ex10_split_seconds(total: int) -> tuple[int, int, int]:
@@ -96,7 +113,12 @@ def ex10_split_seconds(total: int) -> tuple[int, int, int]:
     例：3725 → (1, 2, 5)；3600 → (1, 0, 0)；59 → (0, 0, 59)。
     """
     # TODO
-    return (0, 0, 0)
+    h = total // 3600
+    total %= 3600
+    m = total // 60
+    total %= 60
+    s = total
+    return (h, m, s)
 
 
 def ex11_fix_errors(n: int) -> str:
@@ -113,7 +135,12 @@ def ex11_fix_errors(n: int) -> str:
     改好后的行为：4 → "偶"；5 → "小正"；-1 → "其他"。
     """
     # TODO: 把改好的版本写在这里
-    return ""
+    if n % 2 == 0:
+        return "偶"
+    elif n > 0 and n < 10:
+        return "小正"
+    else:
+        return "其他"
 
 
 def ex12_read_code() -> None:
@@ -125,11 +152,11 @@ def ex12_read_code() -> None:
             return "在元组里"
         return "其他"
 
-    print(describe(""), describe("a"), describe("z"))  # 预测 1:
-    print(0 or "x")                                    # 预测 2:
-    print("" and "y")                                  # 预测 3:
-    print(None or [])                                  # 预测 4:
-    print(7 // -2, -7 % 3, 1 < 5 < 3)                  # 预测 5:
+    print(describe(""), describe("a"), describe("z"))  # 预测 1:"空" "在元组里" "其他"
+    print(0 or "x")                                    # 预测 2:"x"
+    print("" and "y")                                  # 预测 3:""
+    print(None or [])                                  # 预测 4:[]
+    print(7 // -2, -7 % 3, 1 < 5 < 3)                  # 预测 5:-4 2 False
 
 
 if __name__ == "__main__":
