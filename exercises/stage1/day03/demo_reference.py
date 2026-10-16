@@ -13,19 +13,19 @@
 # ============================================================
 # 1. range 三兄弟：range(stop) / range(start, stop) / range(start, stop, step)
 # ============================================================
-print("1-a:", list(range(5)))
-print("1-b:", list(range(2, 10, 3)))
-print("1-c:", list(range(10, 0, -2)))
-print("1-d:", list(range(5, 0)))
+print("1-a:", list(range(5)))   # 1-a:[0,1,2,3,4]
+print("1-b:", list(range(2, 10, 3)))    # 1-b:[2,5,8]
+print("1-c:", list(range(10, 0, -2)))   # 1-c:[10,8,6,4,2]
+print("1-d:", list(range(5, 0)))    # 1-d:[]
 
 # ============================================================
 # 2. for + enumerate：要下标又要元素
 # ============================================================
 tasks = ["写代码", "自测", "提交"]
 for i, t in enumerate(tasks):
-    print("2-a:", i, t)
+    print("2-a:", i, t)     # 2-a:0 写代码\n2-a:1 自测\n2-a:2 提交
 for i, t in enumerate(tasks, 1):
-    print("2-b:", i, t)
+    print("2-b:", i, t)     # 2-b:1 写代码\n2-b:2 自测\n2-b:3 提交
 
 # ============================================================
 # 3. while + 累加：别忘了让条件变量前进
@@ -35,7 +35,7 @@ i = 1
 while i <= 5:
     total += i
     i += 1
-print("3-a:", total, i)
+print("3-a:", total, i) # 3-a:15 6
 
 # ============================================================
 # 4. break / continue
@@ -43,12 +43,12 @@ print("3-a:", total, i)
 for n in range(1, 10):
     if n == 4:
         break
-    print("4-a:", n)
+    print("4-a:", n)    # 4-a:1 2 3 
 
 for n in range(1, 8):
     if n % 2 == 0:
         continue
-    print("4-b:", n)
+    print("4-b:", n)    # 4-b:1 3 5 7
 
 # ============================================================
 # 5. for ... else：Python 特色 —— 没被 break 打断才走 else
@@ -57,11 +57,11 @@ for n in [1, 3, 5]:
     if n == 4:
         break
 else:
-    print("5-a: 没找到 4")
+    print("5-a: 没找到 4")  # 5-a: 没找到 4
 
 for n in [1, 4, 5]:
     if n == 4:
-        break
+        break   # 执行break
 else:
     print("5-b: 没找到 4")
 
@@ -70,31 +70,32 @@ else:
 # ============================================================
 names = ["Tom", "Ann", "Bob"]
 scores = [90, 85]
-print("6-a:", list(zip(names, scores)))
+print("6-a:", list(zip(names, scores)))     # 6-a:[('Tom',90), ('Ann',85)]
 for name, score in zip(names, scores):
-    print("6-b:", name, score)
+    print("6-b:", name, score)              # 6-b:Tom 90\n 6-b:Ann,85
 
 # ============================================================
 # 7. 嵌套循环：外圈跑 1 次，内圈跑满 1 轮
 # ============================================================
 for i in range(1, 3):
     for j in range(1, 3):
-        print("7-a:", i, j)
+        print("7-a:", i, j)                 # 7-a:1 1 \n7-a:1 2 \n7-a:2 1 \n7-a:2 2 \n
 
 # ============================================================
 # 8. 遍历 dict 的三种东西
 # ============================================================
 user = {"id": 1, "name": "Tom"}
 for k in user:
-    print("8-a:", k)
+    print("8-a:", k)                        # 8-a:"id"\n8-a:"name"
 for k, v in user.items():
-    print("8-b:", k, v)
-print("8-c:", list(user.values()))
+    print("8-b:", k, v)                     # 8-b:"id" 1\n8-b:"name" "Tom"
+print("8-c:", list(user.values()))          # 8-c:[1,"Tom"]
 
 # ============================================================
 # 9. ⚠️ 死循环示范（默认注释掉）
-#    取消注释会一直打印 —— 想清楚哪儿漏了让 i 前进，再取消注释
+#    取消注释会一直打印 —— 想清楚哪儿漏了让 J 前进，再取消注释
 # ============================================================
-# j = 0
-# while j < 3:
-#     print("9-a: 我停不下来了", j)
+j = 0
+while j < 3:
+    print("9-a: 我停不下来了", j)
+    j += 1
