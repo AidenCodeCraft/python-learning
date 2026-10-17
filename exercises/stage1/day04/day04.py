@@ -14,6 +14,7 @@
 """
 
 from __future__ import annotations
+from itertools import repeat
 
 
 def check(label: str, actual: object, guess: object) -> None:
@@ -28,11 +29,11 @@ def check(label: str, actual: object, guess: object) -> None:
 def ex01_read_modify_default() -> None:
     """档① 第 1 题：把 demo 的 `add(a, b=10)` 改成 `b=100`。"""
 
-    def add(a: int, b: int = 10) -> int:  # TODO: 默认值改成 100
+    def add(a: int, b: int = 100) -> int:  # TODO: 默认值改成 100
         return a + b
 
-    check("ex01-add(1)", add(1), 0)        # TODO: 把 0 换成你的预测
-    check("ex01-add(1,2)", add(1, 2), 0)   # TODO: 同上
+    check("ex01-add(1)", add(1), 101)        # TODO: 把 0 换成你的预测
+    check("ex01-add(1,2)", add(1, 2), 3)   # TODO: 同上
 
 
 def ex02_read_modify_scope() -> None:
@@ -44,7 +45,7 @@ def ex02_read_modify_scope() -> None:
     counter = 0
 
     def bump() -> None:
-        # counter = counter + 1        # TODO: 取消注释
+        counter = counter + 1        # TODO: 取消注释
         print("ex02: bump 内部读到的 counter =", counter)
 
     try:
@@ -57,17 +58,17 @@ def ex03_read_modify_mutation() -> None:
     """档① 第 3 题：把 `items = items + [99]` 改成 `items.append(99)`。"""
 
     def rebind_item(items: list[int]) -> None:
-        items = items + [99]  # TODO: 改成 items.append(99)
+        items.append(99)  # TODO: 改成 items.append(99)
 
     data2 = [1, 2]
     rebind_item(data2)
-    check("ex03-data2", data2, [1, 2])   # TODO: 改成你的预测
+    check("ex03-data2", data2, [1, 2, 99])   # TODO: 改成你的预测
 
 
 def ex04_read_modify_comprehension() -> None:
     """档① 第 4 题：把 `[n * n for n in range(5)]` 改成带条件 `if n % 2`。"""
-    result = [n * n for n in range(5)]   # TODO: 加 if n % 2
-    check("ex04", result, [0, 1, 4, 9, 16])   # TODO: 改成你的预测
+    result = [n * n for n in range(5) if n % 2]   # TODO: 加 if n % 2
+    check("ex04", result, [1, 9])   # TODO: 改成你的预测
 
 
 # ============================================================
@@ -77,7 +78,7 @@ def ex04_read_modify_comprehension() -> None:
 def ex05_fill_default() -> None:
     """档② 第 5 题：让 `greet("Tom")` 输出 `你好, Tom`。"""
 
-    def greet(name: str, greeting: str = "Hi") -> str:  # TODO: 改默认值
+    def greet(name: str, greeting: str = "你好") -> str:  # TODO: 改默认值
         return greeting + ", " + name
 
     print("ex05:", greet("Tom"))
@@ -87,7 +88,7 @@ def ex06_fill_multi_return() -> None:
     """档② 第 6 题：让 min_max 返回 (最小值, 最大值)。"""
 
     def min_max(nums: list[int]) -> tuple[int, int]:
-        return 0, 0  # TODO
+        return min(nums), max(nums)  # TODO
 
     low, high = min_max([3, 1, 9])
     print("ex06:", low, high)   # 期望 1 9
@@ -96,27 +97,28 @@ def ex06_fill_multi_return() -> None:
 def ex07_fill_get() -> None:
     """档② 第 7 题：让 user 里没有 "age" 时输出 0。"""
     user: dict[str, object] = {"id": 1, "name": "Tom"}
-    print("ex07:", user.get("age"))   # TODO: 补第二个参数
+    print("ex07:", user.get("age", 0))   # TODO: 补第二个参数
 
 
 def ex08_fill_set() -> None:
     """档② 第 8 题：让输出是 `[1, 2, 3]`（去重 + 升序）。"""
     nums = [3, 1, 2, 3, 1]
-    print("ex08:", nums)   # TODO: 用 set 去重、sorted 升序
+    print("ex08:", sorted(set(nums)))   # TODO: 用 set 去重、sorted 升序
 
 
 def ex09_fill_slice() -> None:
     """档② 第 9 题：让 `s` 反转输出 `dcba`。"""
     s = "abcd"
-    print("ex09:", s)   # TODO: 用切片
+    print("ex09:", s[::-1])   # TODO: 用切片
 
 
 def ex10_fill_comprehension() -> None:
     """档② 第 10 题：把下面的循环改成**一行列表推导式**，结果仍是 [2, 4, 6]。"""
-    result: list[int] = []
-    for n in range(1, 7):
-        if n % 2 == 0:
-            result.append(n)
+    # result: list[int] = []
+    # for n in range(1, 7):
+    #     if n % 2 == 0:
+    #         result.append(n)
+    result: list[int] = [n for n in range(1, 7) if n % 2 == 0]
     print("ex10:", result)
 
 
@@ -127,7 +129,7 @@ def ex10_fill_comprehension() -> None:
 def ex11_repeat(s: str, times: int = 2) -> str:
     """档③ 第 11 题：把 s 重复 times 次返回。repeat("ab") → "abab"；repeat("x", 3) → "xxx"。"""
     # TODO
-    return ""
+    return s * times
 
 
 def ex12_stats(nums: list[int]) -> tuple[int, int, float]:
@@ -135,8 +137,9 @@ def ex12_stats(nums: list[int]) -> tuple[int, int, float]:
     stats([1, 2, 3, 4]) → (1, 4, 2.5)。空列表返回 (0, 0, 0.0)。
     """
     # TODO
-    return (0, 0, 0.0)
-
+    if not nums:
+        return (0, 0, 0.0)
+    return (min(nums), max(nums), sum(nums) / len(nums))
 
 def ex13_count_words(text: str) -> dict[str, int]:
     """档③ 第 13 题：统计每个单词出现的次数。
@@ -144,13 +147,17 @@ def ex13_count_words(text: str) -> dict[str, int]:
     提示：`text.split()` 切词；字典计数用 `get(word, 0) + 1`。
     """
     # TODO
-    return {}
+    words = text.split(" ")
+    counts = {}
+    for word in words:
+        counts[word] = counts.get(word, 0) + 1
+    return counts
 
 
 def ex14_unique_sorted(items: list[int]) -> list[int]:
     """档③ 第 14 题：去重并按升序返回。unique_sorted([3, 1, 3, 2]) → [1, 2, 3]。"""
     # TODO
-    return []
+    return sorted(set(items))
 
 
 def ex15_merge(a: dict[str, int], b: dict[str, int]) -> dict[str, int]:
@@ -158,7 +165,7 @@ def ex15_merge(a: dict[str, int], b: dict[str, int]) -> dict[str, int]:
     merge({"x": 1}, {"x": 9, "y": 2}) → {"x": 9, "y": 2}
     """
     # TODO
-    return {}
+    return {**a, **b}
 
 
 def ex16_top_n(scores: dict[str, int], n: int) -> list[str]:
@@ -167,7 +174,8 @@ def ex16_top_n(scores: dict[str, int], n: int) -> list[str]:
     提示：`scores.items()` + `sorted(..., key=lambda kv: kv[1], reverse=True)` + 切片。
     """
     # TODO
-    return []
+    top_scores = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)[:n]
+    return [name for name, score in top_scores]  
 
 
 def ex17_comprehensions(nums: list[int]) -> tuple[list[int], dict[int, int], set[int]]:
@@ -177,7 +185,10 @@ def ex17_comprehensions(nums: list[int]) -> tuple[list[int], dict[int, int], set
       ③ 这些数对 5 取余的 set        例：[1,2,3]   → {1, 2, 3}
     """
     # TODO
-    return ([], {}, set())
+    evens_squared = [n *n for n in nums  if n % 2 == 0]
+    squares_dict = {n: n * n for n in nums } 
+    remainders_set = {n % 5 for n in nums}
+    return (evens_squared, squares_dict, remainders_set)
 
 
 def ex18_get_path(data: dict[str, object], path: str, default: object = None) -> object:
@@ -188,7 +199,13 @@ def ex18_get_path(data: dict[str, object], path: str, default: object = None) ->
     提示：`path.split(".")` + 循环 + `isinstance(cur, dict)` 判断。
     """
     # TODO
-    return default
+    kyes = path.split(".")
+    cur = data
+    for key in kyes:
+        if not isinstance(cur, dict) or key not in cur:
+            return default
+        cur = cur[key]
+    return cur
 
 
 def ex19_fix_errors() -> str:
@@ -217,8 +234,24 @@ def ex19_fix_errors() -> str:
         first_even([1, 3, 4]) → 4；first_even([1, 3]) → -1
     """
     # TODO: 写正确版本
-    return ""
-
+    # ① 想"每次调用互不影响"
+    def add_tag(tag: str, tags: list[str] | None = None) -> list[str]:
+        if tags is None:
+            tags = []
+        tags.append(tag)
+        return tags
+    print(add_tag("a"))
+    # ② 想"返回一份副本"
+    def copy_tags(tags: list[str]) -> list[str]:
+        return sorted(tags)
+    print(copy_tags(["b"]))
+    # ③ 想"返回第一个偶数，没有就返回 -1"
+    def first_even(nums: list[int]) -> int:
+        for n in nums:
+            if n % 2 == 0:
+                return n
+        return -1
+    print(first_even([1,3]))
 
 def ex20_read_code() -> None:
     """档③ 第 20 题（读代码说结果题）：先写 6 个预测，再运行。
@@ -229,28 +262,28 @@ def ex20_read_code() -> None:
         acc.append(x)
         return acc
 
-    check("20-1 f(1),f(2)", [f(1), f(2)], [0])           # TODO 预测 1
+    check("20-1 f(1),f(2)", [f(1), f(2)], [[1, 2],[1, 2]])           # TODO 预测 1
 
     n = 5
 
     def g() -> int:
         return n * 2
 
-    check("20-2 g()", g(), 0)                             # TODO 预测 2
+    check("20-2 g()", g(), 10)                             # TODO 预测 2
 
-    check("20-3", [x * 2 for x in range(4) if x % 2], [])  # TODO 预测 3
+    check("20-3", [x * 2 for x in range(4) if x % 2], [2, 6])  # TODO 预测 3
 
-    check("20-4", {k: len(k) for k in ["a", "bb", "ccc"] if len(k) > 1}, {})  # TODO 预测 4
+    check("20-4", {k: len(k) for k in ["a", "bb", "ccc"] if len(k) > 1}, {'bb': 2, 'ccc': 3})  # TODO 预测 4
 
     s = "hello"
-    check("20-5 s[1:4],s[::-1]", (s[1:4], s[::-1]), "")    # TODO 预测 5
+    check("20-5 s[1:4],s[::-1]", (s[1:4], s[::-1]), ("ell","olleh"))    # TODO 预测 5
 
     def h(items: list[int]) -> list[int]:
         items.append(0)
         return items
 
     data = [1]
-    check("20-6 h(data),data", (h(data), data), ())        # TODO 预测 6
+    check("20-6 h(data),data", (h(data), data), ([1, 0], [1, 0]) )        # TODO 预测 6
 
 
 if __name__ == "__main__":

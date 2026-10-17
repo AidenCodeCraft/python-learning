@@ -17,7 +17,7 @@ def add(a: int, b: int = 10) -> int:
     return a + b
 
 
-print("1-a:", add(1), add(1, 2), add(b=5, a=1))
+print("1-a:", add(1), add(1, 2), add(b=5, a=1))     # 1-a:11 3 6
 
 
 def min_max(nums: list[int]) -> tuple[int, int]:
@@ -25,7 +25,7 @@ def min_max(nums: list[int]) -> tuple[int, int]:
 
 
 low, high = min_max([3, 1, 9])
-print("1-b:", low, high, min_max([3, 1, 9]))
+print("1-b:", low, high, min_max([3, 1, 9]))        # 1-b: 1 9 (1 9)
 
 
 # ============================================================
@@ -36,8 +36,8 @@ def bad_add(title: str, tasks: list[str] = []) -> list[str]:
     return tasks
 
 
-print("2-a:", bad_add("a"))
-print("2-b:", bad_add("b"))
+print("2-a:", bad_add("a"))                         # 2-a: ["a"]
+print("2-b:", bad_add("b"))                         # 2-b: ["a", "b"]
 
 
 def good_add(title: str, tasks: list[str] | None = None) -> list[str]:
@@ -47,8 +47,8 @@ def good_add(title: str, tasks: list[str] | None = None) -> list[str]:
     return tasks
 
 
-print("2-c:", good_add("a"))
-print("2-d:", good_add("b"))
+print("2-c:", good_add("a"))                         # 2-c: ["a"]                    
+print("2-d:", good_add("b"))                         # 2-d: ["b"]
 
 
 # ============================================================
@@ -61,20 +61,20 @@ def read_counter() -> int:
     return counter
 
 
-print("3-a:", read_counter())
+print("3-a:", read_counter())                       # 3-a: 0
 
 
 def bump_bad() -> None:
     counter = counter + 1       # 取消注释会报 UnboundLocalError
-    print(counter)
+    print(counter)                                  # 报错UnboundLocalError
 
 
 def bump_good() -> None:
     global counter              # 少用，但要知道它的存在
-    counter += 1
+    counter += 1                                    # 声明"我要改全局的"
 
 
-print("3-b:", "bump_bad 默认是注释掉的，见 README 说明")
+print("3-b:", "bump_bad 默认是注释掉的，见 README 说明")    # 3-b: bump_bad 默认是注释掉的，见 README 说明
 
 
 # ============================================================
@@ -86,7 +86,7 @@ def append_item(items: list[int]) -> None:
 
 data = [1, 2]
 append_item(data)
-print("4-a:", data)
+print("4-a:", data)                                 # 4-a: [1, 2, 99]
 
 
 def rebind_item(items: list[int]) -> None:
@@ -95,54 +95,54 @@ def rebind_item(items: list[int]) -> None:
 
 data2 = [1, 2]
 rebind_item(data2)
-print("4-b:", data2)
+print("4-b:", data2)                                 # 4-b: [1, 2]
 
 
 # ============================================================
 # 5. list：常用方法 + 切片
 # ============================================================
 nums = [3, 1, 4, 1, 5]
-print("5-a:", sorted(nums), nums)
+print("5-a:", sorted(nums), nums)                   # 5-a: [1, 1, 3, 4, 5] [3, 1, 4, 1, 5]
 nums.sort()
-print("5-b:", nums)
-print("5-c:", nums[1:3], nums[::-1], nums[:2])
+print("5-b:", nums)                                 # 5-b: [1, 1, 3, 4, 5]
+print("5-c:", nums[1:3], nums[::-1], nums[:2])      # 5-c: [1, 3] [5, 4, 3, 1, 1] [1, 1]
 
 
 # ============================================================
 # 6. dict：get / keys / values / items / 合并
 # ============================================================
 user = {"id": 1, "name": "Tom"}
-print("6-a:", user.get("age"), user.get("age", 0))
-print("6-b:", list(user.keys()), list(user.values()))
-print("6-c:", {**user, "age": 18})
-print("6-d:", "id" in user, 1 in user)
+print("6-a:", user.get("age"), user.get("age", 0))  # 6-a:None 0
+print("6-b:", list(user.keys()), list(user.values()))   # 6-b:['id', 'name'] [1, 'Tom']
+print("6-c:", {**user, "age": 18})                  # 6-c:{'id': 1, 'name': 'Tom', 'age': 18}
+print("6-d:", "id" in user, 1 in user)              # 6-d: True False
 
 
 # ============================================================
 # 7. set：去重与集合运算
 # ============================================================
-print("7-a:", set([1, 2, 2, 3]))
+print("7-a:", set([1, 2, 2, 3]))                    # {1, 2, 3}
 a, b = {1, 2, 3}, {2, 3, 4}
-print("7-b:", a & b, a | b, a - b)
+print("7-b:", a & b, a | b, a - b)                  # 7-b:{2, 3} {1, 2, 3, 4} {1}
 
 
 # ============================================================
 # 8. str：split / join / strip / replace / 切片
 # ============================================================
 text = "  hello world  "
-print("8-a:", repr(text.strip()))
-print("8-b:", text.strip().split(" "))
-print("8-c:", "-".join(["a", "b", "c"]))
-print("8-d:", "a,b,,c".split(","))
+print("8-a:", repr(text.strip()))                   # 8-a: hello world
+print("8-b:", text.strip().split(" "))              # 8-b: ['hello', 'world']
+print("8-c:", "-".join(["a", "b", "c"]))            # 8-c: 'a-b-c'
+print("8-d:", "a,b,,c".split(","))                  # 8-d: ['a', 'b', '', 'c']
 
 
 # ============================================================
 # 9. 推导式：一行造出 list / dict / set
 # ============================================================
-print("9-a:", [n * n for n in range(5)])
-print("9-b:", [n for n in range(10) if n % 2 == 0])
-print("9-c:", {n: n * n for n in range(1, 4)})
-print("9-d:", {n % 3 for n in range(10)})
+print("9-a:", [n * n for n in range(5)])            # 9-a:[0, 1, 4, 9, 16]
+print("9-b:", [n for n in range(10) if n % 2 == 0]) # 9-b:[0, 2, 4, 6, 8]
+print("9-c:", {n: n * n for n in range(1, 4)})      # 9-c:[1:1, 2:4, 3:9]
+print("9-d:", {n % 3 for n in range(10)})           # 9-d: {0, 1, 2}
 
 
 # ============================================================
@@ -152,4 +152,4 @@ def find_user(users: dict[str, int], name: str) -> int | None:
     return users.get(name)
 
 
-print("10-a:", find_user({"Tom": 1}, "Tom"), find_user({"Tom": 1}, "Ann"))
+print("10-a:", find_user({"Tom": 1}, "Tom"), find_user({"Tom": 1}, "Ann"))  # 10-a: 1 None
