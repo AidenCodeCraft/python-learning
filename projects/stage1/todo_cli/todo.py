@@ -32,7 +32,13 @@ class Todo:
 
     def to_dict(self) -> dict[str, object]:
         """TODO 1：转成能写进 JSON 的 dict（键名与文件格式一致：id / title / done / priority）。"""
-        raise NotImplementedError("TODO 1: 实现 Todo.to_dict")
+        # raise NotImplementedError("TODO 1: 实现 Todo.to_dict")
+        return {
+            "id": self.id,
+            "title": self.title,
+            "priority": self.priority,
+            "done": self.done
+        }
 
     @classmethod
     def from_dict(cls, data: dict[str, object]) -> "Todo":
@@ -41,11 +47,19 @@ class Todo:
         注意：JSON 读回来 id 是 int、done 是 bool，但类型是 object，
         请用 int(...) / bool(...) 转一下（类型注解要求）。
         """
-        raise NotImplementedError("TODO 2: 实现 Todo.from_dict")
+        # raise NotImplementedError("TODO 2: 实现 Todo.from_dict")
+        return cls(
+            title = str(data["title"]),
+            priority = int(data.get("priority", 2)),
+            done = bool(data.get("done", False)),
+            todo_id = int(data.get("id", 0))
+        )
 
     def __str__(self) -> str:
         """TODO 3：格式形如 `[x] (P1) 写代码`；未完成时是 `[ ]`。"""
-        raise NotImplementedError("TODO 3: 实现 Todo.__str__")
+        # raise NotImplementedError("TODO 3: 实现 Todo.__str__")
+        status = "x" if self.done else " "
+        return f"[{status}] (P{self.priority}) {self.title}"
 
 
 class TodoStore:
