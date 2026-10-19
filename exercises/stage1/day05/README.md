@@ -14,9 +14,10 @@
 | 收尾 | 10 | **清 D4 的尾巴**（见 [CHECKLIST.md](CHECKLIST.md) 第六节第一条） |
 | pytest 讲解 | 30 | 读第一节 + 跑 `demo_pytest.py` |
 | pytest 实战 | 50 | 给 `projects/stage1/todo_cli/test_todo.py` 写 3 个测试 |
-| 项目主体 | 130 | 填 `todo.py` + `cli.py` 的 11 个 TODO，做到能 `add / list / done / delete` |
+| **补漏包** | **30** | **Git 分支 15 + 装饰器认知 10 + f-string 5** → [补漏.md](补漏.md)（审计发现的缺口） |
+| 项目主体 | 130 | **在 `feat/todo-cli` 分支上**填 `todo.py` + `cli.py` 的 11 个 TODO |
 | async 认知 | 20 | 只讲不写代码（第二节） |
-| 验收 | 60 | 8 类异常现场修正 + 口述 + 跑测试 + 提交 |
+| 验收 | 60 | 8 类异常现场修正 + 口述 + 跑测试 + 合并分支 |
 | 复盘 | 30 | 错题本 + CHECKLIST + README 收尾 |
 
 > 中文乱码先 `chcp 65001`。

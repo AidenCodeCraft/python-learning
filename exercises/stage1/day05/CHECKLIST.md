@@ -10,6 +10,16 @@
 - [ ] 把 D4 剩余改动提交（`micro_json.py` / `micro_oop.py` / `variants.py` / `mistakes/2026-10-17.md` / 两张 CHECKLIST）
 - [ ] （可选）`ex19_fix_errors` 的返回类型：`-> str` 却返回 `None` → 改成 `-> None` 或真的返回字符串
 
+## 零·五、补漏包（30 分钟）· 审计发现的缺口
+
+> 依据 [04-阶段1知识点覆盖审计](../../../notes/04-阶段1知识点覆盖审计.md)；教材 [补漏.md](补漏.md)
+
+- [ ] **Git 分支**（P0，验收标准第 5 条明文要求）：`git switch -c feat/todo-cli` → 在分支上提交 → `git switch master` → `git merge --no-ff` → `git branch -d`
+- [ ] `git log --oneline --graph --all` 能看到**分叉 + 合并**
+- [ ] **装饰器认知**（P1）：能说清 `@f` 等价于 `g = f(g)`；装饰器"函数进、函数出"
+- [ ] **f-string**（P1）：`f"{x:.2f}"`、`f"{d['k']}"`、`f"{x=}"` 三个都会
+- [ ] 验收：`todo_cli` 项目**在分支上**完成，并合并回 `master`
+
 ## 一、pytest
 
 - [ ] `demo_pytest.py` 跑过，知道 FAILED 长什么样（`2 failed, 4 passed`）
