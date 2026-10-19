@@ -25,7 +25,8 @@ INSERT INTO departments (id, name) VALUES
     (1, '研发部'),
     (2, '产品部'),
     (3, '销售部'),
-    (4, '人事部');
+    (4, '人事部'),
+    (5, '财务部');   -- 故意留一个"没有员工"的部门，JOIN 练习要用
 
 INSERT INTO employees (id, name, dept_id, salary, hire_date, manager_id) VALUES
     (1,  '张伟', 1, 25000, '2019-03-01', NULL),

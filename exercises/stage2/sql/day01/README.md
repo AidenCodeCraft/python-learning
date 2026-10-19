@@ -18,7 +18,7 @@
 | 上午 | 90min | 读 [01-数据库基础理论.md](01-数据库基础理论.md) → 做 25 题自测（错 ≤5 题算过关） |
 | 上午剩余 | 1.5h | **第 2 部分：SELECT 12 题**（先在 MySQL 上重做；本地的 `run_sql.py` 可当速查工具） |
 | 下午 | 3h | **第 3 部分：增删改查 12 题**（考试核心，全部在 DBX 里做） |
-| 晚上 | 40~60min | 构建训练营 Day1：[设计卡](../../../../projects/build_training/day01-design.md)（**不写代码**） |
+| 晚上 | 40~60min | 基础篇训练 00 方法课：[三段设计法](../../../stage1/基础篇-从零构建/00-方法-三段设计法.md)（**不写代码**） |
 | 晚上剩余 | 30min | 错题本 `mistakes/2026-10-20.md` + 提交 |
 
 > ⚠️ 中文乱码先在终端执行 `chcp 65001`。
@@ -382,7 +382,7 @@ DESCRIBE students;
 ```
 
 ```powershell
-git add exercises/stage2 projects/build_training notes
+git add exercises/stage2 exercises/stage1 notes
 git commit -m "feat(stage2): SQL Day1 理论+SELECT+增删改查（合并日）+ 构建训练营"
 ```
 
@@ -416,6 +416,6 @@ git commit -m "feat(stage2): SQL Day1 理论+SELECT+增删改查（合并日）+
 |---|---|
 | 上午 | `JOIN`（INNER / LEFT）讲解 + 25 题 |
 | 下午 | 子查询 + `GROUP BY` 综合 + 25 题 |
-| 晚上 | 构建训练 Day2：读 + 抄（[word_counter.py](../../../../projects/build_training/reference/word_counter.py)） |
+| 晚上 | 基础篇 ①读 + ②抄：读 [word_counter.py](../../../stage1/基础篇-从零构建/reference/word_counter.py) → 逐行注释 → 手抄跑通 |
 
 > **本周不碰**：索引原理、EXPLAIN、事务隔离级别、存储引擎 —— 那是 10-26 周的内容（见 [00-数据库知识地图](../00-数据库知识地图.md)）。
