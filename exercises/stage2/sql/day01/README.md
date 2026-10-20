@@ -304,6 +304,9 @@ ROLLBACK;          -- 撤销，等于什么都没发生
 COMMIT;            -- 确认，永久生效
 ```
 
+> 🧪 **必做实验（10 分钟）**：[rollback-practice.sql](rollback-practice.sql) —— 用 DBX **开两个标签页**跑一遍，
+> 亲眼看到"未提交别人看不到 / ROLLBACK 撤销 / DDL 不能回滚"。事务光看文字学不会。
+
 ### 5.7 MySQL 必备小命令
 
 ```sql

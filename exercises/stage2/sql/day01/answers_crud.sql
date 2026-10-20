@@ -23,7 +23,7 @@ CREATE TABLE students (
 -- 2. 插入一行：张三，85 分，一班
 -- TODO
 INSERT INTO students (name, score, class_name) 
-VALUES ("张三", 85, "一班")
+VALUES ("张三", 85, "一班");
 
 -- 3. 一条语句插入三行：李四 92 一班、王五 48 二班、赵六 76 二班
 -- TODO
@@ -42,7 +42,7 @@ ORDER BY id;
 -- TODO
 SELECT name, score
 FROM students
-WHERE name = "张三"
+WHERE name = "张三";
 
 UPDATE students
 SET score = 90
@@ -52,10 +52,11 @@ WHERE name = "张三";
 -- TODO
 SELECT *
 FROM students
-WHERE class_name = "二班"
+WHERE class_name = "二班";
 
 UPDATE students
-SET score = score + 5;
+SET score = score + 5
+WHERE class_name = "二班";
 
 -- 7. 把低于 60 分的人改成 60
 -- TODO
@@ -67,15 +68,15 @@ WHERE score < 60;
 -- TODO
 SELECT *
 FROM students
-WHERE name = "王五"
+WHERE name = "王五";
 
 DELETE FROM students
-WHERE name = "王五"
+WHERE name = "王五";
 
 -- 9. 删除三班的所有学生（三班可能不存在 → 看影响几行）
 -- TODO
 DELETE FROM students
-WHERE students.class_name = "三班"
+WHERE students.class_name = "三班";
 
 -- 10. 统计：总人数、平均分（保留 2 位小数）
 -- TODO
@@ -99,9 +100,10 @@ ROLLBACK;
 SELECT name, score, class_name
 FROM students st;
 -- TODO b)
-START TRANSACTION；
+START TRANSACTION;
 UPDATE students
-SET score = score + 2;
+SET score = score + 2
+WHERE class_name = "一班";
 COMMIT;
 SELECT name, score, class_name
 FROM students st;
@@ -109,8 +111,8 @@ FROM students st;
 -- ============================================================
 -- 自检结果记录（做完填这里，方便提交给教练）
 -- ============================================================
--- 第 5 题影响行数：1      第 6 题：4      第 7 题：1
+-- 第 5 题影响行数：1      第 6 题：2      第 7 题：1
 -- 第 8 题：1             第 9 题：0
--- 第 10 题：人数 3  平均分 91.00
--- 第 12 题：ROLLBACK 后一班分数 张三	97 / 李四	99/ 赵六	81；COMMIT 后 张三	99/李四	101/赵六	83
+-- 第 10 题：人数 3  平均分 87.67
+-- 第 12 题：ROLLBACK 后一班分数 张三 90 / 李四 92（赵六 81 不变）；COMMIT 后 张三 92 / 李四 94（赵六 81 不变）
 -- 与自检清单对不上的题号：___
