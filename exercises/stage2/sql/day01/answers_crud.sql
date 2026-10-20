@@ -13,60 +13,104 @@
 
 -- 1. 建表 students：id 自增主键、name 不许空、score 整数默认 0、class_name 变长 20
 -- TODO
-
+CREATE TABLE students (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL,
+  score INT NOT NULL DEFAULT 0,
+  class_name VARCHAR(50)
+);
 
 -- 2. 插入一行：张三，85 分，一班
 -- TODO
-
+INSERT INTO students (name, score, class_name) 
+VALUES ("张三", 85, "一班")
 
 -- 3. 一条语句插入三行：李四 92 一班、王五 48 二班、赵六 76 二班
 -- TODO
-
+INSERT INTO students (name, score ,class_name)
+VALUES ("李四", 92, "一班"),
+("王五",48,"二班"),
+("赵六",76,"二班");
 
 -- 4. 查出所有学生（按 id 升序）
 -- TODO
-
+SELECT *
+FROM students st
+ORDER BY id;
 
 -- 5. 把张三的分数改成 90（先 SELECT 确认！）
 -- TODO
+SELECT name, score
+FROM students
+WHERE name = "张三"
 
+UPDATE students
+SET score = 90
+WHERE name = "张三";
 
 -- 6. 给二班所有人加 5 分（先 SELECT 确认！）
 -- TODO
+SELECT *
+FROM students
+WHERE class_name = "二班"
 
+UPDATE students
+SET score = score + 5;
 
 -- 7. 把低于 60 分的人改成 60
 -- TODO
-
+UPDATE students
+SET score = 60
+WHERE score < 60;
 
 -- 8. 删除王五（先 SELECT 确认！）
 -- TODO
+SELECT *
+FROM students
+WHERE name = "王五"
 
+DELETE FROM students
+WHERE name = "王五"
 
 -- 9. 删除三班的所有学生（三班可能不存在 → 看影响几行）
 -- TODO
-
+DELETE FROM students
+WHERE students.class_name = "三班"
 
 -- 10. 统计：总人数、平均分（保留 2 位小数）
 -- TODO
-
+SELECT COUNT(id), ROUND(AVG(score), 2)
+FROM students;
 
 -- 11. 给表加一列 email VARCHAR(100)
 -- TODO
-
+ALTER TABLE students
+ADD COLUMN email VARCHAR(100);
 
 -- 12. 事务练习：
 --     a) START TRANSACTION; → 一班所有人 +2 → ROLLBACK → 查分数（应回到原值）
 --     b) START TRANSACTION; → 一班所有人 +2 → COMMIT → 查分数（应 +2）
 -- TODO a)
+START TRANSACTION;
+UPDATE students
+SET score = score + 2
+WHERE class_name = "一班";
+ROLLBACK;
+SELECT name, score, class_name
+FROM students st;
 -- TODO b)
-
+START TRANSACTION；
+UPDATE students
+SET score = score + 2;
+COMMIT;
+SELECT name, score, class_name
+FROM students st;
 
 -- ============================================================
 -- 自检结果记录（做完填这里，方便提交给教练）
 -- ============================================================
--- 第 5 题影响行数：___      第 6 题：___      第 7 题：___
--- 第 8 题：___             第 9 题：___
--- 第 10 题：人数 ___  平均分 ___
--- 第 12 题：ROLLBACK 后一班分数 ___ / ___；COMMIT 后 ___ / ___
+-- 第 5 题影响行数：1      第 6 题：4      第 7 题：1
+-- 第 8 题：1             第 9 题：0
+-- 第 10 题：人数 3  平均分 91.00
+-- 第 12 题：ROLLBACK 后一班分数 张三	97 / 李四	99/ 赵六	81；COMMIT 后 张三	99/李四	101/赵六	83
 -- 与自检清单对不上的题号：___
