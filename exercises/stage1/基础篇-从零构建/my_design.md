@@ -1,31 +1,77 @@
 【基础篇 00 · 设计卡】
 ## 需求 1：单词计数器
 ### ① 数据
-用dict存储如{"a":10,"b":9}
+统计结果：dict[str, int]，例如{"the":12, "cat": 5}
 ### ② 模块
-读文件函数、统计单词出现的次数函数、排序函数并打印前10个
+- read_text(path) -> str  只负责读文件内容；文件不存在时返回 ""；不允许打印
+- count_words(text) -> dict  只负责切词+去标点+小写+计数；**不读文件、不打印**
+- top_n(counts, n) -> list   只负责按次数排序取前 n；**不打印**
+- main(argv)                 只负责解析参数、串联上面三步、打印
 ### ③ 步骤
-1、判断文件是否存在：用try...except捕获FileNotFoundError
-2、读文件中的内容json.load(),在把读到的文件用dict存储
-3、把读到的结果的字母转换为小写，并判断每个字母出现的次数
-4、排序出现最多的次数的字母，并打印前10的
+1. 从 argv 拿文件路径和 --top N（默认 10）
+2. read_text 读文本；为空 → 打印提示、返回 1
+3. count_words：text.split() 切词 → 每个词 strip 标点 + lower() → 跳过空串 → dict 计数
+4. top_n：按 (-次数, 单词) 排序 → 取前 N
+5. 打印结果
 
 ## 需求 2：学生成绩管理（内存版，不存文件）
 ### ① 数据
-数据用dict，刚好对应姓名+分数
+```json
+[
+  {"name": "张三", "score": 85},
+  {"name": "李四", "score": 92}
+]
+```
+用 class，在内存中就是一个存着 Student 对象的列表：[Student("张三", 85), Student("李四", 92)]
 ### ② 模块
-一个添加学生函数、一个查看学生函数、一个打印平均分和最高分函数
+- Student 类：负责定义单个学生的基本结构（包含姓名和分数），不许负责管理其他学生。
+- students 列表：负责充当内存数据库，装载所有学生对象，不许直接对外暴露处理逻辑。
+- add_student(name, score) 函数：负责接收姓名和分数，实例化学生并追加到列表中，不许负责打印或计算。
+- view_students() 函数：负责遍历列表并格式化打印所有学生信息，不许修改数据。
+- print_stats() 函数：负责计算并打印平均分和最高分学生，不许修改原列表。
 ### ③ 步骤
-1、先声明一个students的class然后声明__init__的参数。
-2、再创建添加、查看、打印平均和最高函数
+1. 定义 Student 类，包含 __init__ 初始化姓名和分数。
+2. 初始化全局空列表 students = []。
+3. 定义 add_student(name, score) 函数：students.append(Student(name, score))。
+4. 定义 view_students() 函数：遍历 students，打印每个学生的名字和分数。
+5. 定义 print_stats() 函数：
+6. 判断 if not students: 则打印“无数据”并 return。
+7. 计算平均分：avg = sum(s.score for s in students) / len(students)。
+8. 找最高分：top_student = max(students, key=lambda s: s.score)。
+9. 打印平均分和最高分学生的名字。
+10. 执行写死的测试操作：调用 add_student("张三", 85) 和 add_student("李四", 92)。
+11. 调用 view_students() 查看所有学生。
+12. 调用 print_stats() 打印统计结果。
 
 ## 需求 3：简易 ATM（数据要存盘）
 ### ① 数据
-json存储
+```json
+{
+  "balance": 1000.0
+}
+```
+在内存中，就是一个普通的字典：data = {"balance": 1000.0}
 ### ② 模块
-写文件函数、读文件函数
+- load_balance() 函数：负责从 JSON 文件读取余额并返回（如果文件不存在或格式错误，默认返回 0.0），不许修改余额。
+- save_balance(balance) 函数：负责把最新的余额数字覆写进 JSON 文件，不许做业务逻辑判断。
+- deposit(amount) 函数：负责接收存款金额，校验正数后，读取余额、加上金额、保存新余额并返回，不许处理取款逻辑。
+- withdraw(amount) 函数：负责校验正数和余额是否充足，扣减余额、保存并返回，不许自己直接操作文件（调用读写函数即可）。
+- check_balance() 函数：负责读取并打印当前余额，不许修改数据。
 ### ③ 步骤
-1、创建Json文件，Json中存放{"balance":0}
-2、load_json()为读函数、write_json()为写函数
-3、取款失败是函数返回False，因为这不属于异常，就算是超过了余额代码也不会报错。用False最好。
-4、先创建json文件，存放初始数据。再创建读和写函数，然后调用查余额时调用读，取款和存款时调用写。
+1. 定义常量 FILE_PATH = "atm.json"。
+2. 定义 load_balance()：尝试 open 文件并用 json.load 读取 balance 值；如果 FileNotFoundError 则返回 0.0。
+3. 定义 save_balance(balance)：用 json.dump 将 {"balance": balance} 写入文件。
+4. 定义 deposit(amount)：
+5. 如果 amount <= 0，抛出异常 ValueError("存款金额必须为正数")。
+6. 调用 load_balance() 获取当前余额。
+7. 计算新余额并调用 save_balance()。
+8. 返回新余额。
+9. 定义 withdraw(amount)：
+10. 如果 amount <= 0，抛出异常 ValueError("取款金额必须为正数")。
+11. 调用 load_balance() 获取当前余额。
+12. 如果 amount > 当前余额，抛出异常 ValueError("余额不足")。
+13. 计算新余额并调用 save_balance()。
+14. 返回新余额。
+15. 定义 check_balance()：调用 load_balance() 并 print 出来。
+16. 执行硬编码测试：存款 500 → 查余额 → 取款 200 → 查余额 → 尝试取款 1000（触发异常并捕获）。
+17. 重启程序（重新运行），直接查余额，验证数据依然存在。
