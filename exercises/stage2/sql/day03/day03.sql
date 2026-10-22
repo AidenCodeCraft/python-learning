@@ -120,9 +120,9 @@ CREATE TABLE books (
   isbn VARCHAR(20) NOT NULL UNIQUE,
   total_copies INT NOT NULL DEFAULT 0,
   available_copies INT NOT NULL DEFAULT 0,
-  CONSTRAINT chk_total_copies CHECK (chk_total_copies >= 0),
-  CONSTRAINT chk_available_copies CHECK (chk_available_copies >= 0),
-  CONSTRAINT chk_copies_valid CHECK (chk_available_copies <= chk_total_copies),
+  CONSTRAINT chk_total_copies CHECK (total_copies >= 0),
+  CONSTRAINT chk_available_copies CHECK (available_copies >= 0),
+  CONSTRAINT chk_copies_valid CHECK (available_copies <= total_copies)
 )ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- 会员表（members）

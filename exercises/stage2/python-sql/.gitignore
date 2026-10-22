@@ -1,0 +1,3 @@
+.tmp/
+*.db
+__pycache__/
