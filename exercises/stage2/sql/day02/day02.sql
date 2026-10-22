@@ -29,28 +29,27 @@ SELECT em.name AS emp_name, dp.name AS dept_name, em.salary
 FROM employees em
 JOIN departments dp ON em.dept_id = dp.id
 WHERE em.salary > 20000
-GROUP BY em.name ,dp.name, em.salary 
 ORDER BY em.salary DESC ;
 
 -- 销售部员工的姓名、工资（按工资升序）
-SELECT dp.name, em.name, em.salary
+SELECT em.name, em.salary
 FROM employees em
 JOIN departments dp ON em.dept_id = dp.id
 WHERE dp.name = "销售部"
-GROUP BY dp.name, em.name, em.salary 
+GROUP BY em.name, em.salary 
 ORDER BY em.salary ;
 
 -- 每个员工的 emp_name + 上级 mgr_name（没上级的也要显示，按 id）
-SELECT em.name AS emp_name, dp.name AS mgr_name
-FROM employees em
-LEFT JOIN departments dp ON em.dept_id = dp.id
-GROUP BY emp_name , mgr_name;
+SELECT e.name AS emp_name, m.name AS mgr_name
+FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.id
+ORDER BY e.id;
 
 -- 所有部门名 + 员工数（没员工的显示 0，按 dept_id）
 SELECT dp.name, COUNT(em.dept_id)
 FROM departments dp
 LEFT JOIN employees em ON em.dept_id = dp.id
-GROUP BY dp.name, em.dept_id;
+GROUP BY dp.name;
 
 -- 找出没有员工的部门名
 SELECT dp.name
@@ -63,7 +62,7 @@ GROUP BY dp.name, em.dept_id;
 SELECT dp.name, COUNT(em.dept_id) AS cnt
 FROM departments dp
 LEFT JOIN employees em ON em.dept_id = dp.id
-GROUP BY dp.name, em.dept_id
+GROUP BY dp.name
 HAVING COUNT(em.dept_id) > 3;
 
 -- 每个部门名 + 最高工资（没员工的部门也要出现，按最高工资降序）

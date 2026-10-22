@@ -44,7 +44,7 @@ def count_words(text: str) -> dict[str, int]:
 
 def top_n(counts: dict[str, int], n: int) -> list[tuple[str, int]]:
     """按次数从高到低取前 n 个；次数相同时按字母升序。"""
-    ordered = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+    ordered = sorted(counts.items(), key=lambda kv: (kv[-1], kv[0]))
     return ordered[:n]
 
 
