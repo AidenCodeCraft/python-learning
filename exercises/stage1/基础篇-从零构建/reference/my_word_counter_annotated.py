@@ -61,7 +61,7 @@ def top_n(counts: dict[str, int], n: int) -> list[tuple[str, int]]:
     # sorted对任何可迭代对象进行排序，默认从小到大，因为dict不能直接排序，需要转换为视图对象.items()，
     # 对这个字典里的所有键值对进行排序，先按次数的负数从小到大排（也就是次数从大到小），如果次数一样，就按字母从小到大排。
     # -kv[1]控制第一优先级：次数降序， kv[0]控制第二优先级：字母升序，当 key 返回一个元组时，Python 会执行“字典序比较”：
-    ordered = sorted(counts.items(), key=lambda kv: (kv[-1], kv[0]))
+    ordered = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
     # 返回切片前n个
     return ordered[:n]
 
