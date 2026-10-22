@@ -1,3 +1,42 @@
+-- MySQL 默认的事务隔离级别是哪个？
+-- 答：REPEATABLE READ
+
+-- ACID 中「持久性 D」靠什么日志实现？「原子性 A」呢？
+-- 答：持久性 D（提交后断电也不丢失，靠redo log）；原子性 A（要么全改，要不全不该，靠undo log回滚）
+
+-- DELETE / TRUNCATE / DROP 三者的区别（各一句话）？
+-- 答：
+-- DELETE：删除表格中指定某项数据内容
+-- TRUNCATE：清空表格中的所有数据，保留表结构
+-- DROP：删除表，包括表结构
+
+-- 金额字段该用什么类型？为什么不用 FLOAT？
+-- 答：DECIMAL(10,2)，FLOAT不是绝对的小数，最后会存在一个0.30000000000000004
+
+-- utf8 和 utf8mb4 的区别？
+-- 答：utf8 三字节，utf8mb4 四字节
+
+-- 主键和唯一索引的区别（至少说 2 点）？
+-- 答：
+-- 主键不能为NULL，一个表一个
+-- 唯一索引可以为NULL，可以有多个。
+
+-- 什么是「回表」？怎么避免？
+-- 答：唯一索引去查数据时，第一次查询的时索引的数据，当唯一索引没有要的数据，再次通过对应聚簇索引的主键查询到完整的行数据就是回表。尽量少用SELECT *。
+
+-- 联合索引 (name, age) 能用于 WHERE age = 20 吗？为什么？
+-- 答：不能，根据联合索引他只能被name，age使用。不能被age，或者age、name使用。
+
+-- INNER JOIN 和 LEFT JOIN 的区别？COUNT(*) 和 COUNT(右表.id) 在 LEFT JOIN 下有什么不同？
+-- 答：
+-- INNER JOIN：只保留能匹配上的数据
+-- LEFT JOIN：左表数据保留，右表数据匹配不上为NULL
+-- COUNT(*)：把数据全部统计NULL也算+1
+-- COUNT(右表.id)：对于NULL数据不会+1而是0
+
+-- 一条 SQL 缺了 WHERE 的 UPDATE 会发生什么？写 UPDATE 前的安全做法是什么？
+-- 答：会把表中所有对应列数据都更新了；写UPDATE前先用SELECT查询看改哪个数据
+
 DROP TABLE IF EXISTS orders;
 
 CREATE TABLE orders (
@@ -36,8 +75,8 @@ ORDER BY em.salary DESC;
 SELECT dp.name , COUNT(em.dept_id)
 FROM departments dp 
 LEFT JOIN employees em ON em.dept_id = dp.id
-GROUP BY dp.name
-ORDER BY COUNT(em.dept_id) DESC ;
+GROUP BY dp.id, dp.name
+ORDER BY COUNT(em.dept_id) DESC, dp.id ASC;
 
 SELECT em.name , em.salary 
 FROM employees em 
@@ -45,23 +84,25 @@ WHERE salary > (SELECT AVG(em2.salary)
 FROM employees em2)
 ORDER BY em.salary;
 
-SELECT dp.name, ROUND(AVG(em.salary), 2)
-FROM departments dp 
-LEFT JOIN employees em ON em.dept_id = dp.id
-WHERE em.salary > (SELECT AVG(em2.salary)
-FROM employees em2)
-GROUP BY dp.name;
+SELECT dp.name AS dept_name, ROUND(AVG(em.salary), 2) AS avg_salary
+FROM departments dp
+JOIN employees em ON em.dept_id = dp.id
+GROUP BY dp.id, dp.name
+HAVING AVG(em.salary) > (
+    SELECT AVG(salary) 
+    FROM employees
+);
 
 SELECT em.name , em2.name 
 FROM employees em
-LEFT JOIN employees em2 ON em.manager_id = em2.id;
+LEFT JOIN employees em2 ON em.manager_id = em2.id
+ORDER BY em.id;
 
-SELECT em.name, MAX(em.salary) AS max_salary
+SELECT em.name, em.salary
 FROM employees em
 JOIN departments dp ON em.dept_id = dp.id
 WHERE dp.name = '研发部'
-GROUP BY em.name
-ORDER BY max_salary DESC
+ORDER BY em.salary DESC
 LIMIT 1;
 
 -- 图书表（books）
@@ -79,9 +120,9 @@ CREATE TABLE books (
   isbn VARCHAR(20) NOT NULL UNIQUE,
   total_copies INT NOT NULL DEFAULT 0,
   available_copies INT NOT NULL DEFAULT 0,
-  CONSTRAINT chk_total_copies CHECK (total_copies >= 0),
+  CONSTRAINT chk_total_copies CHECK (chk_total_copies >= 0),
   CONSTRAINT chk_available_copies CHECK (chk_available_copies >= 0),
-  CONSTRAINT chk_copies_valid CHECK (available_copies <= total_copies),
+  CONSTRAINT chk_copies_valid CHECK (chk_available_copies <= chk_total_copies),
 )ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- 会员表（members）
