@@ -30,7 +30,13 @@ def check(label: str, actual: object, expect: object) -> None:
 def ex01_list_tables() -> list[str]:
     """返回数据库里所有表名，按字母序。"""
     # TODO: connect → cursor → execute(sqlite_master 查询) → fetchall → close
-    return []
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("select name from sqlite_master where type = 'table' order by name")
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [row[0] for row in rows]
 
 
 # ============================================================
@@ -40,7 +46,13 @@ def ex01_list_tables() -> list[str]:
 def ex02_list_employees() -> list[tuple[str, float]]:
     """返回 12 个员工的 (name, salary)，按 id 升序。"""
     # TODO
-    return []
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("select name, salary from employees order by id")
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return rows
 
 
 # ============================================================
@@ -54,7 +66,13 @@ def ex03_by_dept(dept_id: int) -> list[tuple[str, float]]:
     （不要用 f-string 拼进去 —— 为什么？Day2 会讲）。
     """
     # TODO
-    return []
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("SELECT em.name ,em.salary FROM employees em WHERE em.dept_id = ? ORDER BY id",(dept_id,))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return rows
 
 
 # ============================================================
@@ -64,7 +82,13 @@ def ex03_by_dept(dept_id: int) -> list[tuple[str, float]]:
 def ex04_top_salary() -> tuple[str, float] | None:
     """返回工资最高的员工 (name, salary)；用 fetchone 取第一行。"""
     # TODO
-    return None
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("SELECT em.name , em.salary FROM employees em ORDER BY em.salary DESC")
+    rows = cur.fetchone()
+    cur.close()
+    conn.close()
+    return rows
 
 
 # ============================================================
@@ -77,7 +101,14 @@ def ex05_rows_as_dict() -> list[dict[str, object]]:
     提示：conn.row_factory = sqlite3.Row，然后 dict(row)
     """
     # TODO
-    return []
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute("SELECT em.id, em.name, em.salary FROM employees em ORDER BY em.id")
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [dict(row) for row in rows]
 
 
 # ============================================================
@@ -97,7 +128,18 @@ class Employee:
 def ex06_to_objects() -> list[Employee]:
     """把员工查询结果转成 Employee 对象列表（按 id 升序）。"""
     # TODO
-    return []
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    rows = cur.execute("SELECT em.id, em.name , em.salary FROM employees em ORDER BY em.id")
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    employee = []
+    for row in rows:
+        emp = Employee(emp_id = row[0], name = row[1], salary = row[2])
+        employee.append(emp)
+    return employee
 
 
 # ============================================================
@@ -110,7 +152,18 @@ def ex07_count_by_dept() -> dict[int, int]:
     注意：没有员工的部门（财务部）不会出现在结果里 —— 为什么？
     """
     # TODO
-    return {}
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT dp.id , COUNT(em.salary) 
+        FROM departments dp 
+        JOIN employees em ON em.dept_id = dp.id 
+        GROUP BY dp.id
+    """)
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return {row[0]:row[1] for row in rows}
 
 
 # ============================================================
@@ -122,6 +175,23 @@ def ex08_safe_close() -> str:
     捕获异常并返回**异常类型名**（例如 "OperationalError"）。
     """
     # TODO
+    conn = None
+    cur = None
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT dp.id
+            FROM departmentsdddaa dp
+        """)
+        rows = cur.fetchall()
+    except Exception as e:
+        return type(e).__name__
+    finally:
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
     return ""
 
 

@@ -30,6 +30,13 @@ def _connect(db: Path = READONLY_DB) -> sqlite3.Connection:
     return sqlite3.connect(db)
 
 
+def _ensure_work_db() -> None:
+    """确保写操作使用只读库的副本。"""
+    WORK_DIR.mkdir(parents=True, exist_ok=True)
+    if not WORK_DB.exists():
+        shutil.copy2(READONLY_DB, WORK_DB)
+
+
 # ============================================================
 # 第 1 题 · 参数化最简形式
 # ============================================================
@@ -40,7 +47,18 @@ def ex01_find_by_name(name: str) -> list[str]:
     要求：`WHERE name = ?`，name 作为参数传入。
     """
     # TODO
-    return []
+    conn = _connect()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT em.name 
+        FROM employees em 
+        WHERE em.name = ?
+        ORDER BY em.id;
+    """, (name,))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [row[0] for row in rows]
 
 
 # ============================================================
@@ -57,7 +75,14 @@ def ex02_injection_demo(attack: str) -> int:
     用它跑 attack = "' OR '1'='1" → 应该返回 12（全部员工！）
     """
     # TODO
-    return 0
+    conn = _connect()
+    cur = conn.cursor()
+    sql = f"SELECT name FROM employees WHERE name = '{attack}'"
+    cur.execute(sql)
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return len(rows)
 
 
 # ============================================================
@@ -71,7 +96,13 @@ def ex03_injection_blocked(attack: str) -> int:
     `' OR '1'='1` 会被当成"名字叫这个的人"去匹配，不会再被解析成 SQL。
     """
     # TODO
-    return 0
+    conn = _connect()
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM employees WHERE name = ?",(attack,))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return len(rows)
 
 
 # ============================================================
@@ -81,7 +112,13 @@ def ex03_injection_blocked(attack: str) -> int:
 def ex04_find_by_dept(dept_id: int) -> list[str]:
     """按 dept_id 查员工姓名（按 id 升序）。"""
     # TODO
-    return []
+    conn = _connect()
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM employees WHERE dept_id = ? ORDER BY id",(dept_id,))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [row[0] for row in rows]
 
 
 # ============================================================
@@ -94,7 +131,13 @@ def ex05_search(keyword: str) -> list[str]:
     提示：SQL 里写 `WHERE name LIKE ?`，参数传 `f"%{keyword}%"`。
     """
     # TODO
-    return []
+    conn = _connect()
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM employees WHERE name LIKE ? ORDER BY id", (f"%{keyword}%", ))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [row[0] for row in rows]
 
 
 # ============================================================
@@ -114,8 +157,30 @@ def ex06_insert_many() -> int:
          所以插入时必须手动给 id（用 MAX(id)+1 起）。
       3. 插入后 commit，返回插入的行数
     """
-    # TODO
-    return 0
+    _ensure_work_db()
+    conn = _connect(WORK_DB)
+    try:
+        cur = conn.cursor()
+        try:
+            cur.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM employees")
+            next_id = cur.fetchone()[0]
+            rows = [
+                (next_id, "测试甲", 1, 10000.0, "2025-01-01", None),
+                (next_id + 1, "测试乙", 2, 12000.0, "2025-01-02", 4),
+                (next_id + 2, "测试丙", 3, 15000.0, "2025-01-03", 6),
+            ]
+            cur.executemany(
+                "INSERT INTO employees "
+                "(id, name, dept_id, salary, hire_date, manager_id) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                rows,
+            )
+            conn.commit()
+            return cur.rowcount
+        finally:
+            cur.close()
+    finally:
+        conn.close()
 
 
 # ============================================================
@@ -132,7 +197,9 @@ def ex07_safe_order_column(column: str) -> str:
           否则 → 抛 ValueError("非法的排序列")
     """
     # TODO
-    return ""
+    if column not in ALLOWED_COLUMNS:
+        raise ValueError("非法的排序列")
+    return column
 
 
 # ============================================================
@@ -150,8 +217,33 @@ def ex08_rollback_works() -> int:
       5. 查询这个"测试"员工数量（应为 0）
     返回第 5 步查到的数量。
     """
-    # TODO
-    return -1
+    _ensure_work_db()
+    names = ("回滚测试甲", "回滚测试乙", "回滚测试丙")
+    conn = _connect(WORK_DB)
+    try:
+        cur = conn.cursor()
+        try:
+            cur.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM employees")
+            next_id = cur.fetchone()[0]
+            rows = [
+                (next_id, names[0], 1, 10000.0, "2025-01-01", None),
+                (next_id + 1, names[1], 2, 12000.0, "2025-01-02", 4),
+                (next_id + 2, names[2], 3, 15000.0, "2025-01-03", 6),
+            ]
+            conn.execute("BEGIN")
+            cur.executemany(
+                "INSERT INTO employees "
+                "(id, name, dept_id, salary, hire_date, manager_id) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                rows,
+            )
+            conn.rollback()
+            cur.execute("SELECT COUNT(*) FROM employees WHERE name LIKE ?", ("回滚测试%",))
+            return cur.fetchone()[0]
+        finally:
+            cur.close()
+    finally:
+        conn.close()
 
 
 if __name__ == "__main__":
