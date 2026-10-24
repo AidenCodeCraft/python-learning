@@ -9,6 +9,8 @@
 > 6. 正确处理 JSON、中文、数据库异常
 >
 > **这就是"Cache-Aside（旁路缓存）"模式**，后端最常用的缓存写法。
+>
+> 本机 Redis 端口是 **6380**（6379 被 `ai-diagnostic-redis` 占用）；考试现场按现场配置改 host/port。
 
 ---
 
@@ -41,7 +43,7 @@ import pymysql
 import redis
 
 # ---------- 连接（考试时改成你的配置）----------
-REDIS = redis.Redis(host="127.0.0.1", port=6379, db=0, decode_responses=True)
+REDIS = redis.Redis(host="127.0.0.1", port=6380, db=0, decode_responses=True)
 CACHE_TTL = 300          # 秒
 DB_CONF = dict(host="127.0.0.1", port=3306, user="root", password="123456",
                database="school", charset="utf8mb4",

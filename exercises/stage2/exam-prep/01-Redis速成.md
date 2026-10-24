@@ -3,6 +3,7 @@
 > **为什么必须学**：考点里 Redis 占一整部分（5 类结构 + Python 操作 + 6 道理解题）。
 > **目标**：能对着考点表格，用 Python 写出每个操作的代码并验证结果。
 > 配套可运行代码 → [redis_demo.py](redis_demo.py)（每类结构跑一遍，改参数再跑）
+> 本机端口是 **6380**（6379 被 `ai-diagnostic-redis` 占用）；考试现场按现场给的 host/port 改。
 
 ---
 
@@ -13,7 +14,7 @@
 
 ```python
 import redis
-r = redis.Redis(host="127.0.0.1", port=6379, db=0, decode_responses=True)
+r = redis.Redis(host="127.0.0.1", port=6380, db=0, decode_responses=True)
 r.ping()   # True 就代表连上了
 ```
 

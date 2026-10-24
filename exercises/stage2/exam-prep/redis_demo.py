@@ -1,6 +1,7 @@
 """Redis 5 类数据结构 · 可运行示例（考试速成）
 
-前置：本机 Redis 已起（见 00-环境准备.md），已 pip install redis
+前置：本机 Redis 已起（容器 exam-redis，端口 6380；6379 被 ai-diagnostic 占用，
+      详见 00-环境准备.md），已 pip install redis
 运行：
     cd exercises/stage2/exam-prep
     python redis_demo.py
@@ -11,9 +12,17 @@
 
 from __future__ import annotations
 
+import sys
+
 import redis
 
-r = redis.Redis(host="127.0.0.1", port=6379, db=0, decode_responses=True)
+# Windows PowerShell 默认 GBK：把不能编码的字符替换掉，避免 print 时 UnicodeEncodeError
+try:
+    sys.stdout.reconfigure(errors="replace")
+except (AttributeError, ValueError):
+    pass
+
+r = redis.Redis(host="127.0.0.1", port=6380, db=0, decode_responses=True)
 
 
 def demo_string() -> None:
@@ -134,8 +143,9 @@ if __name__ == "__main__":
     demo_pipeline()
 
     # 清理演示数据
-    for k in ("user:1:name", "user:2:name", "course:1:visits", "lock:course:1",
-              "student:100", "queue:task", "recent:study", "course:python:students",
-              "course:mysql:students", "rank:score", "pipe:k1", "pipe:cnt"):
+    for k in ("code:13800000000", "user:1:name", "user:2:name", "course:1:visits",
+              "lock:course:1", "student:100", "queue:task", "recent:study",
+              "course:python:students", "course:mysql:students", "rank:score",
+              "pipe:k1", "pipe:cnt"):
         r.delete(k)
-    print("\n✅ 全部示例跑通（演示数据已清理）")
+    print("\n[OK] 全部示例跑通（演示数据已清理）")
