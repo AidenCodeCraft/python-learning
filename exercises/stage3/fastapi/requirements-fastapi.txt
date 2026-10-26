@@ -1,0 +1,12 @@
+# FastAPI 阶段依赖（已装进 .venv，换机器时用这个文件安装）
+# pip install -r requirements-fastapi.txt
+fastapi>=0.110
+uvicorn[standard]>=0.29
+httpx>=0.27          # TestClient 需要
+httpx2>=0.1           # 新版 starlette TestClient 用（避免弃用警告）
+pydantic>=2.6
+pydantic-settings>=2.2
+sqlalchemy>=2.0
+pymysql>=1.1
+redis>=5.0
+pytest>=8.0
