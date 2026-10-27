@@ -10,3 +10,4 @@ sqlalchemy>=2.0
 pymysql>=1.1
 redis>=5.0
 pytest>=8.0
+fakeredis>=2.20      # 没有 Redis 时练缓存逻辑
