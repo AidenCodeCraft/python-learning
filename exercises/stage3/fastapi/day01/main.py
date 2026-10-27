@@ -65,7 +65,7 @@ class Item(BaseModel):
 def read_root() -> dict[str, str]:
     """GET / 返回 {"message": "Hello FastAPI"}"""
     # TODO
-    return {}
+    return {"message": "Hello FastAPI"}
 
 
 # ============================================================
@@ -76,7 +76,7 @@ def read_root() -> dict[str, str]:
 def health() -> dict[str, str]:
     """GET /health 返回 {"status": "ok"}"""
     # TODO
-    return {}
+    return {"status": "ok"}
 
 
 # ============================================================
@@ -91,7 +91,9 @@ def list_items(skip: int = 0, limit: int = 10) -> list[dict]:
     - ⚠️ 注意 response_model 会把 secret 过滤掉
     """
     # TODO
-    return []
+    ordered = [ITEMS[i] for i in sorted(ITEMS)]
+    ordered = ordered[skip : skip + limit]
+    return ordered
 
 
 # ============================================================
@@ -105,7 +107,9 @@ def get_item(item_id: int) -> dict:
     - 不存在 → raise HTTPException(status_code=404, detail="Item not found")
     """
     # TODO
-    return {}
+    if item_id not in ITEMS:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return ITEMS[item_id]
 
 
 # ============================================================
@@ -120,7 +124,15 @@ def create_item(payload: ItemCreate) -> dict:
     - 状态码必须是 201（decoration 里的 status_code 已经写了，不用你再改）
     """
     # TODO
-    return {}
+    global next_id
+    new_data = {
+        "id": next_id, 
+        **payload.model_dump(), 
+        "secret": "内部备注"
+    }
+    ITEMS[next_id] = new_data
+    next_id += 1
+    return new_data
 
 
 # ============================================================
@@ -135,7 +147,11 @@ def update_item(item_id: int, payload: ItemUpdate) -> dict:
     - 返回更新后的商品
     """
     # TODO
-    return {}
+    if item_id not in ITEMS:
+        raise HTTPException(status_code=404, detail="Item not found")
+    item = ITEMS[item_id]
+    item.update(payload.model_dump(exclude_unset=True))
+    return item
 
 
 # ============================================================
@@ -149,4 +165,7 @@ def delete_item(item_id: int) -> None:
     - 存在 → 删除，返回 None（204 不能有 body）
     """
     # TODO
+    if item_id not in ITEMS:
+        raise HTTPException(status_code=404, detail="Item not found")
+    del ITEMS[item_id]
     return None
