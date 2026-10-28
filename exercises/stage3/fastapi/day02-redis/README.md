@@ -1,5 +1,13 @@
 # FastAPI × Redis · 最小集（2 小时）
 
+> ⏸️ **10-28 起暂停 / 降级为"了解即可"**。上岗前你只需要 **3 件事**：
+> ① 用**同步** redis-py 跑通 `set / get / hset / hgetall / incr`（5 行）
+> ② 看懂"缓存三步"：读缓存 → 未命中查库 → 写回 + TTL
+> ③ 在 FastAPI 里**调用现成封装**（抄脚手架的 get_cache / set_cache）
+>
+> **异步客户端 / lifespan 连接池 / 限流 → 11-09 之后再学。**
+> 减负说明见 [notes/13 第五节](../../../notes/13-现实评估与减负版计划.md)。
+
 > **目标**：能在 FastAPI 里用 Redis 做**接口缓存 / 更新后删缓存 / 限流**，并知道连接池放在哪。
 > 讲解：[01-讲解-Redis在FastAPI中的最小集.md](01-讲解-Redis在FastAPI中的最小集.md)
 > 代码：[cache_app.py](cache_app.py)（完整可运行）｜ 自检：[check_cache.py](check_cache.py)（**14/14 已验证**）
