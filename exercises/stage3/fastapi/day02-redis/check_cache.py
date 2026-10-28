@@ -14,11 +14,11 @@ from __future__ import annotations
 import os
 import sys
 
-os.environ.setdefault("USE_FAKE_REDIS", "1")   # 默认用假 Redis，保证本机没 Redis 也能跑
+os.environ.setdefault("USE_FAKE_REDIS", "1")  # 默认用假 Redis，保证本机没 Redis 也能跑
 
-from fastapi.testclient import TestClient          # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
 
-from cache_app import app                          # noqa: E402
+from cache_app import app  # noqa: E402
 
 results: list[bool] = []
 
@@ -73,7 +73,7 @@ def main() -> None:
         check("第 6 次被限流", codes[5], 429)
 
         # ⑧ 缓存 TTL
-        client.get("/students/2")                     # 先把 2 写进缓存
+        client.get("/students/2")  # 先把 2 写进缓存
         r = client.delete("/cache/2")
         check("手动删缓存", body(r).get("deleted"), True)
         r = client.get("/students/2")
@@ -82,7 +82,10 @@ def main() -> None:
     ok = sum(results)
     total = len(results)
     print(f"\n{'=' * 60}\n通过 {ok}/{total}")
-    print("模式:", "fakeredis（模拟）" if os.getenv("USE_FAKE_REDIS") == "1" else "真实 Redis")
+    print(
+        "模式:",
+        "fakeredis（模拟）" if os.getenv("USE_FAKE_REDIS") == "1" else "真实 Redis",
+    )
     if ok != total:
         sys.exit(1)
 

@@ -26,15 +26,16 @@ APP_VERSION = "2.0.0"
 
 # 应用级状态（真实项目里这里是数据库连接池、Redis 客户端等）
 STATE: dict[str, object] = {
-    "started": False,        # lifespan 是否已启动
-    "db_opened": 0,          # 打开了多少个"数据库会话"
-    "db_closed": 0,          # 关闭了多少个
+    "started": False,  # lifespan 是否已启动
+    "db_opened": 0,  # 打开了多少个"数据库会话"
+    "db_closed": 0,  # 关闭了多少个
 }
 
 
 # ============================================================
 # 第 8 题 · lifespan：应用启动/关闭时执行的代码
 # ============================================================
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -44,8 +45,10 @@ async def lifespan(app: FastAPI):
     真实项目在这里初始化：数据库连接池、Redis 客户端、加载配置。
     """
     # TODO: 启动逻辑
+    STATE["started"] = True
     yield
     # TODO: 关闭逻辑
+    STATE["started"] = False
 
 
 app = FastAPI(title=APP_NAME, version=APP_VERSION, lifespan=lifespan)
@@ -55,20 +58,28 @@ app = FastAPI(title=APP_NAME, version=APP_VERSION, lifespan=lifespan)
 # 第 4 题 · 中间件：给每个响应加 X-Process-Time 响应头
 # ============================================================
 
+
 # TODO: 用 @app.middleware("http") 实现
-# async def add_process_time(request: Request, call_next):
-#     start = time.perf_counter()
-#     response = await call_next(request)
-#     response.headers["X-Process-Time"] = f"{(time.perf_counter() - start) * 1000:.2f}"
-#     return response
+@app.middleware("http")
+async def add_process_time(request: Request, call_next):
+    start = time.perf_counter()
+    response = await call_next(request)
+    response.headers["X-Process-Time"] = f"{(time.perf_counter() - start) * 1000:.2f}"
+    return response
 
 
 # ============================================================
 # 第 5 题 · CORS：允许前端 http://localhost:3000 跨域访问
 # ============================================================
 
-# TODO: app.add_middleware(CORSMiddleware, allow_origins=[...], allow_credentials=True,
-#                          allow_methods=["*"], allow_headers=["*"])
+# TODO:
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # ============================================================
@@ -76,7 +87,13 @@ app = FastAPI(title=APP_NAME, version=APP_VERSION, lifespan=lifespan)
 # ============================================================
 
 ITEMS: dict[int, dict] = {
-    1: {"id": 1, "name": "Python 入门书", "price": 99.0, "stock": 5, "secret": "内部备注"},
+    1: {
+        "id": 1,
+        "name": "Python 入门书",
+        "price": 99.0,
+        "stock": 5,
+        "secret": "内部备注",
+    },
     2: {"id": 2, "name": "机械键盘", "price": 399.0, "stock": 12, "secret": "内部备注"},
 }
 next_id = 3
@@ -105,17 +122,24 @@ class Item(BaseModel):
 # 第 6 题 · 自定义业务异常 + 全局异常处理器
 # ============================================================
 
+
 class ItemNotFoundError(Exception):
     """业务异常：商品不存在。不要直接 raise HTTPException，交给全局处理器统一格式。"""
 
 
 # TODO: 用 @app.exception_handler(ItemNotFoundError) 注册处理器
 # 要求返回 JSONResponse(status_code=404, content={"code": 40400, "msg": "Item not found", "data": None})
+@app.exception_handler(ItemNotFoundError)
+async def item_out_found_error(request: Request, exc: ItemNotFoundError):
+    return JSONResponse(
+        status_code=404, content={"code": 40400, "msg": "Item not found", "data": None}
+    )
 
 
 # ============================================================
 # 第 1 题 · 分页依赖（类作为依赖）
 # ============================================================
+
 
 class Pagination:
     """分页依赖：skip >= 0，limit 在 1~100。
@@ -132,19 +156,27 @@ class Pagination:
         self.limit = limit
 
 
+@app.get("/item", response_model=list[dict])
+def list_item(page: Pagination = Depends()) -> list[dict]:
+    ordered = [ITEMS[i] for i in sorted(ITEMS)]
+    return ordered[page.skip : page.skip + page.limit]
+
+
 # ============================================================
 # 第 2 题 · 配置依赖
 # ============================================================
 
+
 def get_settings() -> dict[str, str]:
     """返回应用配置（真实项目读环境变量 / pydantic-settings）。"""
     # TODO: return {"app_name": APP_NAME, "version": APP_VERSION}
-    return {}
+    return {"app_name": APP_NAME, "version": APP_VERSION}
 
 
 # ============================================================
 # 第 3 题 · yield 依赖（模拟数据库会话：进入时打开，响应后关闭）
 # ============================================================
+
 
 def get_db():
     """yield 之前打开会话，yield 之后关闭会话。
@@ -155,13 +187,18 @@ def get_db():
       - finally：STATE["db_closed"] += 1
     """
     # TODO
-    yield "session"
-    # TODO: finally 里计数
+    STATE["db_opened"] += 1
+    try:
+        yield "session"
+    finally:
+        # TODO: finally 里计数
+        STATE["db_closed"] += 1
 
 
 # ============================================================
 # 接口
 # ============================================================
+
 
 @app.get("/")
 def read_root() -> dict[str, str]:
@@ -177,42 +214,45 @@ def health() -> dict[str, str]:
 def get_info(settings: dict[str, str] = Depends(get_settings)) -> dict[str, str]:
     """第 2 题：通过 Depends 注入配置，返回 {"app_name": ..., "version": ...}"""
     # TODO: return settings（或组装）
-    return {}
+    return {"app_name": APP_NAME, "version": APP_VERSION}
 
 
 @app.get("/db-check")
 def db_check(db: str = Depends(get_db)) -> dict[str, object]:
     """第 3 题：返回 {"db": 依赖给的值, "opened": STATE["db_opened"]}"""
     # TODO
-    return {}
+    return {"db": db, "opened": STATE["db_opened"]}
 
 
 @app.get("/db-closed")
 def db_closed() -> dict[str, object]:
     """第 3 题：返回 {"closed": STATE["db_closed"]}（用来验证 yield 之后的清理真的执行了）"""
     # TODO
-    return {}
+    return {"closed": STATE["db_closed"]}
 
 
 @app.get("/lifespan-check")
 def lifespan_check() -> dict[str, object]:
     """第 8 题：返回 {"started": STATE["started"]}"""
     # TODO
-    return {}
+    return {"started": STATE["started"]}
 
 
 @app.get("/items", response_model=list[Item])
 def list_items(page: Pagination = Depends()) -> list[dict]:
     """第 1 题：用 Pagination 依赖分页（不再直接写 skip/limit 参数）。"""
     # TODO
-    return []
+    ordered = [ITEMS[i] for i in sorted(ITEMS)]
+    return ordered[page.skip : page.skip + page.limit]
 
 
 @app.get("/items/{item_id}", response_model=Item)
 def get_item(item_id: int) -> dict:
     """第 6 题：不存在时 raise ItemNotFoundError（不是 HTTPException），交给全局处理器。"""
     # TODO
-    return {}
+    if item_id not in ITEMS:
+        raise ItemNotFoundError("Item not found")
+    return ITEMS[item_id]
 
 
 @app.post("/items", response_model=Item, status_code=status.HTTP_201_CREATED)

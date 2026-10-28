@@ -20,7 +20,7 @@ import redis.asyncio as aioredis
 from fastapi import Depends, FastAPI, HTTPException, Request
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
-CACHE_TTL = 300          # 秒
+CACHE_TTL = 300  # 秒
 USE_FAKE = os.getenv("USE_FAKE_REDIS") == "1"
 
 # 模拟数据库
@@ -35,6 +35,7 @@ async def lifespan(app: FastAPI):
     """① 启动时建 Redis 连接池（只建一次），关闭时释放。"""
     if USE_FAKE:
         import fakeredis.aioredis
+
         app.state.redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
     else:
         app.state.redis = aioredis.from_url(REDIS_URL, decode_responses=True)
@@ -53,6 +54,7 @@ app = FastAPI(title="学生资料 API（带缓存）", lifespan=lifespan)
 # ② 依赖：从 app.state 里取连接池（不是每个请求新建连接）
 # ============================================================
 
+
 def get_redis(request: Request) -> aioredis.Redis:
     return request.app.state.redis
 
@@ -64,6 +66,7 @@ def student_key(student_id: int) -> str:
 # ============================================================
 # ③ 读：Cache-Aside（先缓存 → 未命中查库 → 回写缓存）
 # ============================================================
+
 
 @app.get("/students/{student_id}")
 async def get_student(
@@ -97,6 +100,7 @@ async def get_student(
 # ④ 写：先更新库 → 再删缓存（顺序不能反）
 # ============================================================
 
+
 @app.put("/students/{student_id}")
 async def update_student(
     student_id: int,
@@ -122,12 +126,13 @@ async def update_student(
 # ⑤ 限流：INCR + EXPIRE（60 秒内最多 5 次）
 # ============================================================
 
+
 @app.get("/limited")
 async def limited(r: aioredis.Redis = Depends(get_redis)):
     key = "ratelimit:demo"
-    count = await r.incr(key)          # 单命令原子：不会丢更新
+    count = await r.incr(key)  # 单命令原子：不会丢更新
     if count == 1:
-        await r.expire(key, 60)        # 第一次设过期，之后不覆盖
+        await r.expire(key, 60)  # 第一次设过期，之后不覆盖
     if count > 5:
         raise HTTPException(status_code=429, detail="太频繁了，60 秒后再试")
     return {"count": count, "ttl": await r.ttl(key)}
@@ -136,6 +141,7 @@ async def limited(r: aioredis.Redis = Depends(get_redis)):
 # ============================================================
 # ⑥ 统计（方便自检看命中率）
 # ============================================================
+
 
 @app.get("/stats")
 async def stats(r: aioredis.Redis = Depends(get_redis)):
